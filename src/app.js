@@ -31,9 +31,9 @@ app.use(express.urlencoded({
 // app.use(express.static(static_path));
 // app.set("view engine", "hbs");
 
-// app.get("/", (req, res) => {
-//     res.render("register")
-// });
+app.get("/", (req, res) => {
+    res.send("working");
+});
 
 
 app.post("/register", async (req, res) => {
