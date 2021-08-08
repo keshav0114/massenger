@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 
@@ -50,10 +50,10 @@ const employeSchema = new mongoose.Schema({
         default: ""
     },
     tokens: [{
-         token: {
+        token: {
             type: String,
             required: true
-         }       
+        }
     }]
 })
 
@@ -75,14 +75,14 @@ employeSchema.methods.generateAuthToken = async function () {
     try {
         const token = await jwt.sign({ _id: this._id.toString() }, process.env.SECRET_KEY);
         // console.log(token);
-        this.tokens = this.tokens.concat({token : token})
+        this.tokens = this.tokens.concat({ token: token })
         await this.save();
         return token;
     } catch (error) {
-            console.log(error);
+        console.log(error);
     }
 }
- 
+
 employeSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
         // const passwordHash = await bcrypt.hash(password, 10)

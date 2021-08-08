@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { response } = require("express");
 const express = require("express");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const otpGenerator = require('otp-generator');
 const nodemailer = require("nodemailer");
 const cookieParser = require("cookie-parser");
@@ -46,7 +46,7 @@ app.post("/register", async (req, res) => {
             const token = await employeeSchema.generateAuthToken();  // for generating token
             console.log(token);
             res.cookie("jwt", token, {
-                expires: new Date(Date.now() +  30000),
+                expires: new Date(Date.now() + 30000),
                 httpOnly: true   // cookie se jhedjhad nahi kar payega user
             });
             console.log(cookie);
@@ -97,7 +97,7 @@ app.post("/login", async (req, res) => {
             const token = await usermail.generateAuthToken();
             console.log(token);
             res.cookie("jwt", token, {
-                expires: new Date(Date.now() +  600000),
+                expires: new Date(Date.now() + 600000),
                 httpOnly: true,   // cookie se jhedjhad nahi kar payega user
                 secure: true
             });
