@@ -1,6 +1,7 @@
 require('dotenv').config();
 const { response } = require("express");
 const express = require("express");
+const cors = require("cors")
 const bcrypt = require("bcryptjs");
 const otpGenerator = require('otp-generator');
 const nodemailer = require("nodemailer");
@@ -27,6 +28,15 @@ app.use(express.json());      // for json format
 app.use(express.urlencoded({
     extended: false
 }));
+app.use(cors());
+app.use(bodyParser.json());
+
+app.use((req, res, next) =>{  // To remove CROS (cross-resource-origin-platform) problem
+    res.setHeader('Access-Control-Allow-Origin',"*"); // to allow all client we use *
+    res.setHeader('Access-Control-Allow-Methods',"OPTIONS,GET,POST,PUT,PATCH,DELETE"); //these are the allowed methods
+    res.setHeader('Access-Control-Allow-Headers', "*"); // allowed headers (Auth for extra data related to authoriaztiom)
+    next();
+})
 
 // app.use(express.static(static_path));
 // app.set("view engine", "hbs");
