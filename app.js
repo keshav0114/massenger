@@ -45,11 +45,11 @@ app.post("/register", async (req, res) => {
 
             const token = await employeeSchema.generateAuthToken();  // for generating token
             console.log(token);
-            res.cookie("jwt", token, {
-                expires: new Date(Date.now() + 30000),
-                httpOnly: true   // cookie se jhedjhad nahi kar payega user
-            });
-            console.log(cookie);
+//             res.cookie("jwt", token, {
+//                 expires: new Date(Date.now() + 30000),
+//                 httpOnly: true   // cookie se jhedjhad nahi kar payega user
+//             });
+//             console.log(cookie);
 
             const registered = await employeeSchema.save()   // save use hua hai save karne ke liye data in database and ye promise return karega jo ki resolve hota hai to then nahi to catch me jayega
             res.status(200).send(registered);
