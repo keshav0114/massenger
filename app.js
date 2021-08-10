@@ -11,8 +11,8 @@ const cookieParser = require("cookie-parser");
 
 const app = express();
 
-require("./db/conn.js");
-const Register = require("./models/registers");
+require("./src/db/conn.js");
+const Register = require("./src/models/registers");
 const { Mongoose } = require("mongoose");
 
 const port = process.env.PORT || 3000;
