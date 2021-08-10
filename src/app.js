@@ -90,28 +90,25 @@ app.post("/login", async (req, res) => {
         const password = req.body.password;
 
         const usermail = await Register.findOne({ email: email });
-        console.log(usermail);
-        if (usermail) {
-            const isMatch = await bcrypt.compare(password, usermail.password);  // ye compare karega user ke password ko database ke password se
-            // console.log(isMatch)
-            const token = await usermail.generateAuthToken();
-            console.log(token);
-            res.cookie("jwt", token, {
-                expires: new Date(Date.now() + 600000),
-                httpOnly: true,   // cookie se jhedjhad nahi kar payega user
-                secure: true
-            });
-            console.log(cookie);
-            console.log(`ye hai hamara cookie ${req.cookies.jwt}`);
-
-
-
-            if (isMatch) {
-                res.status(201).send(usermail.password);
-            } else {
-                res.send("invalid password");
-            }
+        // console.log(usermail);
+        console.log("ok");
+        const isMatch = await bcrypt.compare(password, usermail.password);  // ye compare karega user ke password ko database ke password se
+        console.log(isMatch)
+        const token = await usermail.generateAuthToken();
+        console.log(token);
+        // res.cookie("jwt", token, {
+        //     expires: new Date(Date.now() + 600000),
+        //     httpOnly: true,   // cookie se jhedjhad nahi kar payega user
+        //     secure: true
+        // });
+        // console.log(cookie);
+        // console.log(`ye hai hamara cookie ${req.cookies.jwt}`)
+        if (isMatch) {
+            res.status(201).send(usermail.password);
+        } else {
+            res.send("invalid password");
         }
+
 
     } catch (error) {
         res.status(400).send(error);
@@ -255,10 +252,12 @@ app.post("/resetpass", async (req, res) => {
 })
 
 
-// app.post("/otpEmail", async (req, res) => {
-//     const otpUser = req.body.otpfield;
-//     const otpDatabase = 
-// })
+app.post("/otpEmail", async (req, res) => {
+    const otpUser = req.body.otpfield;
+
+})
+
+
 
 
 
