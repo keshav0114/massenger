@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { response } = require("express");
 const express = require("express");
-const cors = require("cors")
+// const cors = require("cors")
 const bcrypt = require("bcryptjs");
 const otpGenerator = require('otp-generator');
 const nodemailer = require("nodemailer");
@@ -28,7 +28,7 @@ app.use(express.json());      // for json format
 app.use(express.urlencoded({
     extended: false
 }));
-app.use(cors());
+// app.use(cors());
 app.use(bodyParser.json());
 
 app.use((req, res, next) =>{  // To remove CROS (cross-resource-origin-platform) problem
