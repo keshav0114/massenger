@@ -136,7 +136,7 @@ app.post("/login", async (req, res) => {
         // console.log(cookie);
         // console.log(`ye hai hamara cookie ${req.cookies.jwt}`)
         if (isMatch) {
-            res.status(201).send(usermail.password).render("/home");
+            res.status(201).send(usermail.password);
         } else {
             res.send("invalid password");
         }
@@ -224,7 +224,7 @@ app.post("/resetpass", async (req, res) => {                          //   d.get
             // npm install mongoose moment mongoose-moment
 
 
-            console.log(doc.reset);
+            // console.log(doc.reset);
             //##################### using  nodemailer #################//
             const transporter = nodemailer.createTransport({
                 service: "gmail",
@@ -244,7 +244,7 @@ app.post("/resetpass", async (req, res) => {                          //   d.get
 
             transporter.sendMail(mailOption, function (error, info) {
                 if (!error) {
-                    res.send(usermail.password);
+                    res.send("OTP sended");
                     // console.log()
                     // 2021-08-11T17:51:22.201+00:00
                 }
