@@ -1,10 +1,11 @@
 require('dotenv').config();
-const { response } = require("express");
+const { response, json } = require("express");
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const otpGenerator = require('otp-generator');
 const nodemailer = require("nodemailer");
 const cookieParser = require("cookie-parser");
+const cors = require("cors")
 
 // const path = require("path")   // why---dir path ke liye
 
@@ -15,7 +16,22 @@ require("./src/db/conn.js");
 const Register = require("./src/models/registers");
 const { Mongoose } = require("mongoose");
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
+
+// ######################################### for extract minute sec and day from date ##############################################
+
+// const date1 = new Date("2021-08-11T17:28:03.880+00:00");
+// const date2 = new Date("2021-08-11T17:23:29.793+00:00");
+// const diffDays = parseInt((date1 - date2) / (1000 * 60)); //gives day difference
+// //one_day means 1000*60*60*24
+// //one_hour means 1000*60*60
+// //one_minute means 1000*60
+// //one_second means 1000
+// console.log(diffDays)
+
+
+
+// ###################################################################################################################################
 
 // const static_path = path.join(__dirname, "../public")
 // const view_path = path.join(__dirname, "../views")
@@ -28,6 +44,7 @@ app.use(express.urlencoded({
     extended: false
 }));
 
+app
 app.use((req, res, next) => {  // To remove CROS (cross-resource-origin-platform) problem
     res.setHeader('Access-Control-Allow-Origin', "*"); // to allow all client we use *
     res.setHeader('Access-Control-Allow-Methods', "OPTIONS,GET,POST,PUT,PATCH,DELETE"); //these are the allowed methods
@@ -67,11 +84,11 @@ app.post("/register", async (req, res) => {
             // >>>>>>> dd72d3f672dd4b0b0dc451f0a1db7f648af2f19c
 
             const registered = await employeeSchema.save()   // save use hua hai save karne ke liye data in database and ye promise return karega jo ki resolve hota hai to then nahi to catch me jayega
-            res.status(200).send(registered);
+            res.status(200).send(registered.firstname);
             // console.log(registered)
 
         } else {
-            res.status(400).send("password not maching");
+            res.status(201).send("password not maching");
         }
 
 
@@ -119,7 +136,7 @@ app.post("/login", async (req, res) => {
         // console.log(cookie);
         // console.log(`ye hai hamara cookie ${req.cookies.jwt}`)
         if (isMatch) {
-            res.status(201).send(usermail.password);
+            res.status(201).send(usermail.password).render("/home");
         } else {
             res.send("invalid password");
         }
@@ -160,7 +177,7 @@ app.post("/login", async (req, res) => {
 // ################################################################################################################################# //
 // ################################################################################################################################# //
 
-app.post("/resetpass", async (req, res) => {
+app.post("/resetpass", async (req, res) => {                          //   d.getMinutes();  let date_ob = new Date();
 
     try {
 
@@ -207,7 +224,7 @@ app.post("/resetpass", async (req, res) => {
             // npm install mongoose moment mongoose-moment
 
 
-            console.log(otp);
+            console.log(doc.reset);
             //##################### using  nodemailer #################//
             const transporter = nodemailer.createTransport({
                 service: "gmail",
@@ -226,11 +243,13 @@ app.post("/resetpass", async (req, res) => {
 
 
             transporter.sendMail(mailOption, function (error, info) {
-                if (error) {
-                    res.send(error);
+                if (!error) {
+                    res.send(usermail.password);
+                    // console.log()
+                    // 2021-08-11T17:51:22.201+00:00
                 }
                 else {
-                    res.send(mailOption);
+                    res.send(error);
                 }
             });
 
@@ -261,14 +280,39 @@ app.post("/resetpass", async (req, res) => {
         }
 
     } catch (error) {
+        console.log(error);
         res.send("failed to fetch the data");
     }
 
 })
 
 
-app.post("/otpEmail", async (req, res) => {
-    const otpUser = req.body.otpfield;
+app.post("/otpverify", async (req, res) => {
+
+    try {
+        const otp = req.body.otp;
+        // const email = req.body.email;
+        const data = await Register.findOne({ reset: otp });
+        if (data) {
+            const date1 = data.updatedAt;
+            const date2 = new Date;
+            const diffMinute = parseInt((date2 - date1) / (1000 * 60));
+            // res.send(`${diffMinute}`);
+            if (diffMinute <= 5) {
+                res.status(202).send("Verification Succesfull");
+                console.log(data);
+            }
+            else {
+                res.send("time out")
+            }
+        }
+        else {
+            res.send("incorrect otp")
+        }
+    } catch (error) {
+        console.log(error)
+        res.send("incorrect otp");
+    }
 
 })
 
@@ -279,3 +323,36 @@ app.post("/otpEmail", async (req, res) => {
 app.listen(port, () => {
     console.log(`server is running on port no ${port}`);
 })
+
+
+// 22: 16: 19
+// 22: 18: 20
+
+
+// var date1 = new Date("08/09/2017");
+// var date2 = new Date("08/10/2017");
+// var diffDays = parseInt((date2 - date1) / (1000 * 60 * 60 * 24)); //gives day difference 
+// //one_day means 1000*60*60*24
+// //one_hour means 1000*60*60
+// //one_minute means 1000*60
+// //one_second means 1000
+// console.log(diffDays)
+
+
+// comapare dates in js
+
+// var date1 = new Date('December 25, 2017 01:30:00');
+// var date2 = new Date('June 18, 2016 02:30:00');
+
+// //best to use .getTime() to compare dates
+// if(date1.getTime() === date2.getTime()){
+//     //same date
+// }
+
+// if(date1.getTime() > date2.getTime()){
+//     //date 1 is newer
+// }
+
+// moment use
+
+// console.log(moment.utc(moment(firstDate,"DD/MM/YYYY HH:mm:ss").diff(moment(secondDate,"DD/MM/YYYY HH:mm:ss"))).format("HH:mm:ss"))
