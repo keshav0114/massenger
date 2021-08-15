@@ -17,7 +17,7 @@ require("./src/db/conn.js");
 const Register = require("./src/models/registers");
 const { Mongoose } = require("mongoose");
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 
 // ######################################### for extract minute sec and day from date ##############################################
 
