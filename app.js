@@ -84,7 +84,7 @@ app.post("/register", async (req, res) => {
             // >>>>>>> dd72d3f672dd4b0b0dc451f0a1db7f648af2f19c
 
             const registered = await employeeSchema.save()   // save use hua hai save karne ke liye data in database and ye promise return karega jo ki resolve hota hai to then nahi to catch me jayega
-            res.status(200).send(registered.firstname);
+            res.status(200).send("Registration successfull");
             // console.log(registered)
 
         } else {
@@ -136,7 +136,7 @@ app.post("/login", async (req, res) => {
         // console.log(cookie);
         // console.log(`ye hai hamara cookie ${req.cookies.jwt}`)
         if (isMatch) {
-            res.status(201).send(usermail.password);
+            res.status(201).send("Login successfull");
         } else {
             res.send("invalid password");
         }
