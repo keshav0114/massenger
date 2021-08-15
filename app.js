@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const otpGenerator = require('otp-generator');
 const nodemailer = require("nodemailer");
 const cookieParser = require("cookie-parser");
+const smtpTransport = require('nodemailer-smtp-transport');
 const cors = require("cors")
 
 // const path = require("path")   // why---dir path ke liye
@@ -84,6 +85,7 @@ app.post("/register", async (req, res) => {
             // >>>>>>> dd72d3f672dd4b0b0dc451f0a1db7f648af2f19c
 
             const registered = await employeeSchema.save()   // save use hua hai save karne ke liye data in database and ye promise return karega jo ki resolve hota hai to then nahi to catch me jayega
+            console.log(registered);
             res.status(200).send("Registration successfull");
             // console.log(registered)
 
@@ -226,17 +228,17 @@ app.post("/resetpass", async (req, res) => {                          //   d.get
 
             // console.log(doc.reset);
             //##################### using  nodemailer #################//
-            const transporter = nodemailer.createTransport({
+            const transporter = nodemailer.createTransport(smtpTransport({
                 service: "gmail",
                 auth: {
                     user: process.env.EMAIL,
                     pass: process.env.PASS_E
                 }
-            });
+            }));
             const mailOption = {
                 from: process.env.EMAIL,
                 to: usermail.email,
-                subject: "Validation OTP for verification",    // https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbGZVWUJFbnFPUFk1aGVkMm9UVHhnaWJjc1FYUXxBQ3Jtc0tuZnFNa3BMVkR5SkZIWm5lLWw0NEF5b0tsYnF3T2dnR3pXUm1xNVo4YTJ2cFJiLVJsdGpfc24zYkpaWGx5bnFiT3lLb0NGQk9zcVlqaF9lRXI3alN6Qm5XVXBHNEdNS2NkeERuY0tZaDg5ZW1aUkZEYw&q=https%3A%2F%2Fmyaccount.google.com%2Flesssecureapps
+                subject: "Validation OTP for reset your password",    // https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbGZVWUJFbnFPUFk1aGVkMm9UVHhnaWJjc1FYUXxBQ3Jtc0tuZnFNa3BMVkR5SkZIWm5lLWw0NEF5b0tsYnF3T2dnR3pXUm1xNVo4YTJ2cFJiLVJsdGpfc24zYkpaWGx5bnFiT3lLb0NGQk9zcVlqaF9lRXI3alN6Qm5XVXBHNEdNS2NkeERuY0tZaDg5ZW1aUkZEYw&q=https%3A%2F%2Fmyaccount.google.com%2Flesssecureapps
                 html: "<h3>OTP for account verification is </h3>" + "<h1 style='font-weight:bold;'>" + otp + "</h1>"
             };
 
