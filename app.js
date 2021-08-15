@@ -2,10 +2,10 @@ require('dotenv').config();
 const { response, json } = require("express");
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const otpGenerator = require('otp-generator');
+// const otpGenerator = require('otp-generator');
 const nodemailer = require("nodemailer");
 const cookieParser = require("cookie-parser");
-const smtpTransport = require('nodemailer-smtp-transport');
+// const smtpTransport = require('nodemailer-smtp-transport');
 const cors = require("cors")
 
 // const path = require("path")   // why---dir path ke liye
@@ -193,48 +193,33 @@ app.post("/resetpass", async (req, res) => {                          //   d.get
             // otp = otp * 1000000;
             // otp = parseInt(otp);
 
-            // const otp = Math.floor(Math.random() * (999999 - 100000) + 100000);
-            // console.log(otp);
-            // res.send("otp");
+            const otp = Math.floor(Math.random() * (999999 - 100000) + 100000);
+            console.log(otp);
 
-            // res.status(200).send(otp);
-            // res.send(otp);
 
-            const otp = otpGenerator.generate(6, {
-                upperCase: false,
-                digits: true,
-                specialChars: false,
-                alphabets: false
-            });
-            // res.send(otp);
-            // usermail.reset = otp;
-            // usermail.expireOtp = Date.now() + 3600000;
-            // usermail.save()
-            // .then(() =>{
-            //     console.log("success");
-            // })
-            // .catch((e) => {
-            //     console.log(e);
-            // })
+            // const otp = otpGenerator.generate(6, {
+            //     upperCase: false,
+            //     digits: true,
+            //     specialChars: false,
+            //     alphabets: false
+            // });
 
-            // Mongoose.set('useFindAndModify', false);
             const doc = await Register.findOneAndUpdate({
                 email: email,
                 reset: otp,
                 updatedAt: new Date
             });
-            // npm install mongoose moment mongoose-moment
 
 
             // console.log(doc.reset);
             //##################### using  nodemailer #################//
-            const transporter = nodemailer.createTransport(smtpTransport({
+            const transporter = nodemailer.createTransport({
                 service: "gmail",
                 auth: {
                     user: process.env.EMAIL,
                     pass: process.env.PASS_E
                 }
-            }));
+            });
             const mailOption = {
                 from: process.env.EMAIL,
                 to: usermail.email,
@@ -245,13 +230,15 @@ app.post("/resetpass", async (req, res) => {                          //   d.get
 
 
             transporter.sendMail(mailOption, function (error, info) {
-                if (!error) {
-                    res.send("OTP sended");
+                if (error) {
+                    res.send(error)
                     // console.log()
                     // 2021-08-11T17:51:22.201+00:00
                 }
                 else {
-                    res.send(error);
+                    console.log(mailOtion)
+                    res.send("OTP sended");
+
                 }
             });
 
