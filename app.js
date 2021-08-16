@@ -193,16 +193,16 @@ app.post("/resetpass", async (req, res) => {                          //   d.get
             // otp = otp * 1000000;
             // otp = parseInt(otp);
 
-            const otp = Math.floor(Math.random() * (999999 - 100000) + 100000);
-            console.log(otp);
+            //const otp = Math.floor(Math.random() * (999999 - 100000) + 100000);
+            //console.log(otp);
 
 
-            // const otp = otpGenerator.generate(6, {
-            //     upperCase: false,
-            //     digits: true,
-            //     specialChars: false,
-            //     alphabets: false
-            // });
+            const otp = otpGenerator.generate(6, {
+                upperCase: false,
+                digits: true,
+                specialChars: false,
+                alphabets: false
+            });
 
             const doc = await Register.findOneAndUpdate({
                 email: email,
